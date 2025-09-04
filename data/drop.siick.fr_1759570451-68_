@@ -1,0 +1,531 @@
+ 
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Siickdrop : Drop a file, i give you a link</title>
+        <script src="https://drop.siick.fr/lib/jquery-3.1.0.min.js"></script>
+        <script>
+			var Config_baseUrl = 'https://drop.siick.fr/'
+            var Config_maxUploadPerFile = 536870912 
+            var Config_maxUploadTotal = 536870912 
+            var Config_maxUploadNb = 20 
+            var Msg_errorFileSize = 'this file exceeds the allowed size 512M';
+            var Msg_errorTotalSize = 'The total size of the files exceeds the allowed size : 512M';
+            var Msg_errorUploadNb = 'You can not send more than 20 files at a time';
+            var Msg_errorFileType = 'this type of file isn\'t allow';
+            var filesUploadQueu=0;
+        </script>
+
+        <script src="https://drop.siick.fr/lib/upload.js"></script>
+
+        <link rel="stylesheet" href="https://drop.siick.fr/lib/style.css" />
+        <link rel="stylesheet" href="https://drop.siick.fr/lib/css-file-icons.css" />
+        <link rel="apple-touch-icon" sizes="180x180" href="https://drop.siick.fr//apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="https://drop.siick.fr//favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="https://drop.siick.fr//favicon-16x16.png">
+        <link rel="manifest" href="https://drop.siick.fr//site.webmanifest">
+        <link rel="stylesheet" href="https://drop.siick.fr/lib/jquery-ui.min.css">
+        <link rel="stylesheet" href="https://drop.siick.fr/lib/lightgallery.min.css">
+        <script src="https://drop.siick.fr/lib/jquery-ui.min.js"></script>
+        <script src="https://drop.siick.fr/lib/lightgallery.min.js"></script>
+        <script>
+        $( function() {
+            $( document ).tooltip();
+        } );
+        </script>
+        <!-- Bootstrap styles -->
+<!--
+        <link rel="stylesheet" href="https://drop.siick.fr/lib/bootstrap.min.css" />
+-->
+        <link
+          rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+        />
+        <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+        <link rel="stylesheet" href="https://drop.siick.fr/lib/jQuery-File-Upload/css/jquery.fileupload.css" />
+        <link rel="stylesheet" href="https://drop.siick.fr/lib/jQuery-File-Upload/css/jquery.fileupload-ui.css" />
+    </head>
+    <body>
+        <div id="langues">
+            <a id="hreffr" href="?langueChange=fr"><img class="drapeau" src="https://drop.siick.fr/lib/fr.png" alt="fr" width="23" height="15" /></a><a id="hrefen" href="?langueChange=en"><img class="drapeau drapeauActif" src="https://drop.siick.fr/lib/en.png" alt="en" width="23" height="15" /></a><a id="hrefoc" href="?langueChange=oc"><img class="drapeau" src="https://drop.siick.fr/lib/oc.png" alt="oc" width="23" height="15" /></a>        </div>
+        <div id="languesLegende" style="display: none"></div>
+        <div id="page-wrap">         
+        <h1><a href="https://drop.siick.fr/">Siickdrop</a> : Drop a file, i give you a link</h1><div id="newUploadPub"><a href="https://drop.siick.fr/">Send / share your files</a></div><p class="">These files will be automatically deleted on 04/10/2025 09:10, ie in 30 days</p><div id="viewMod"><a href="https://drop.siick.fr/gallery/1759570451-68/">View in gallery mode </a></div><div class="viewNormal fileGlobal fileJust1 file-ext-html" ><div class="file fileJust1 icone" onclick="location.href='https://drop.siick.fr/1759570451-68/'"><div class="fi fi-html fi-size"><div class="fi-content">html</div></div></div><div class="file fileJust1 name"><a href="https://drop.siick.fr/1759570451-68/" target="_blank">This page</a></div><div class="file fileJust1 read input"><a href="https://drop.siick.fr/1759570451-68/" target="_blank"><img src="https://drop.siick.fr//lib/eye.svg" /></a> <input class="copy read fileAll" name="read" type="text" value="https://drop.siick.fr/1759570451-68/" readonly=""></div></div><div id="lightgalleryNormal"><div class="viewNormal fileGlobal file0 file-ext-png" ><div class="file file0 icone delete"><a href="https://drop.siick.fr/del/1759570451-68/KEYHERE/reproduciblejourney.png"  class="deleteLink">azer<img src="https://drop.siick.fr//lib/trash.svg" /></a></div><div class="file file0 icone"><div class="item" data-src="https://drop.siick.fr/1759570451-68/reproduciblejourney.png"><img width="55" src="https://drop.siick.fr/1759570451-68/.reproduciblejourney.png.small" /></a></div></div><div class="file file0 name"><a href="https://drop.siick.fr/dl/1759570451-68/reproduciblejourney.png" target="_blank">reproduciblejourney.png</a></div><div class="file file0 info"><span class="size file0">Size : 358Ko</span> <span class="type file0">Type : image/png</span> </div><div class="file file0 read input"><a href="https://drop.siick.fr/1759570451-68/reproduciblejourney.png" target="_blank"><img src="https://drop.siick.fr//lib/eye.svg" /></a> <a rel="tooltip" class="bulles" title="Click to copy the link to the clipboard"><input class="copy read file0" name="read" type="text" value="https://drop.siick.fr/1759570451-68/reproduciblejourney.png"></a></div><div class="file file0 dl input"><a href="https://drop.siick.fr/dl/1759570451-68/reproduciblejourney.png" target="_blank"><img src="https://drop.siick.fr//lib/download.svg" /></a> <a rel="tooltip" class="bulles" title="Click to copy the link to the clipboard"><input class="copy dl file0" name="dl" type="text" value="https://drop.siick.fr/dl/1759570451-68/reproduciblejourney.png" readonly=""></a></div></div></div><div id="addToShare"><h3>Add files to this share</h3><div id="newUpload" class="newUpload"><noscript><h3>You must have JavaScript enabled in order to use this site. Please enable JavaScript and then reload this page in order to continue. </h3> </noscript>
+            <!-- The file upload form used as target for the file upload widget -->
+            <form
+            id="fileupload"
+            action=""
+            method="POST"
+            enctype="multipart/form-data"
+            >
+                <input type="hidden" value="" id="files_key" name="key" />
+                <input type="hidden" value="" id="files_id" name="id" />
+                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                <div class="fileupload-buttonbar">
+                <div class="expire-button">Expire : <select name="expire" id="expire"><option value="1" >1  day</option><option value="7" >7  days</option><option value="15"  selected="selected">15  days</option><option value="30" >30  days</option><option value="90" >90  days</option><option value="180" >180  days</option>
+                </select></div>
+                  <div class="boutton">
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span id="ButtonAdd" class="btn btn-success fileinput-button">
+                      <i class="glyphicon glyphicon-plus"></i>
+                      <span>Add files...</span>
+                      <input type="file" name="files[]" multiple />
+                    </span>
+                    <button id="ButtonStart" type="submit" class="btn btn-primary start">
+                      <i class="glyphicon glyphicon-upload"></i>
+                      <span>Start upload</span>
+                    </button>
+                    <button id="ButtonReset" type="reset" class="btn btn-warning cancel">
+                      <i class="glyphicon glyphicon-ban-circle"></i>
+                      <span>Cancel upload</span>
+                    </button>
+                    <button id="ButtonMyFiles" type="reset" onclick="location.href='https://drop.siick.fr//My';" class="bulles myFiles btn btn-info">
+                      <i class="glyphicon glyphicon-folder-open"></i>
+                      <span>See the files already sent</span>
+                    </button>
+                    <!-- The global file processing state -->
+                    <span class="fileupload-process"></span>
+                  </div>
+                  <div id="redirectToFiles">Redirect to https://drop.siick.fr/<span id="redirectToFilesId"></span>/ in progress...</div>
+                  <div  class="error" id="maxUploadTotalError">The total limit per upload is 512M</div>
+                  <!-- The global progress state -->
+                  <div class="fileupload-progress fade">
+                    <!-- The global progress bar -->
+                    <div
+                      class="progress progress-striped active"
+                      role="progressbar"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      <div
+                        class="progress-bar progress-bar-success"
+                        style="width: 0%;"
+                      ></div>
+                    </div>
+                    <!-- The extended global progress state -->
+                    <div class="progress-extended">&nbsp;</div>
+                  </div>
+                </div>
+                <!-- The table listing the files available for upload/download -->
+                <table role="presentation" class="table table-striped">
+                  <tbody class="files"></tbody>
+                </table>
+              
+              <div class="shareUrlPrint file fileJust1 read input">The sharing will be accessible from : <input class="copy read fileAll" name="read" type="text" value="https://drop.siick.fr/1759570451-68/" id="shareUrl" readonly=""></div>
+              
+            <a id="uploadOptionsLinkShow" class="uploadOptionsLink">Options &#8642;</a>
+            <div id="uploadOptions">
+                <a id="uploadOptionsLinkHide"  class="uploadOptionsLink">Options &#8638;</a>
+                <p id="resizeForm">Images resize : <select name="resize" id="resize"><option value="0" >No resizing</option><option value="300" >300px</option><option value="800" >800px</option><option value="1024"  selected="selected">1024px</option><option value="1920" >1920px</option><option value="2048" >2048px</option><option value="4096" >4096px</option></select></p>
+                <p id="uploadOptionPassword"><input type="checkbox" name="passwordCheckbox" id="passwordCheckbox" />Protect with password<span id="passwordForm"> : <br /><input type="password" name="password" id="password" autocomplete="off" /></span></p>
+                <p id="uploadOptionAccess"><input type="checkbox" name="accessCheckbox" id="accessCheckbox" />Delete after access<span id="accessForm"> : <br /><input title="Number of accesses before deletion (1 minimum)" type="number" min="1" max="999999" step="1"  name="access" id="access" value="1" /></span></p>
+            </div>
+            </form>
+            <div>
+            </div>
+            <div class="limit"><p>The limit per file is 512M</p><p>The total limit per upload is 512M</p></div>
+             <script>
+                if (localStorage.getItem('myFiles')) {
+                    $('.myFiles').show();
+                }
+            </script></div></div>                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            // lightgallery
+                            // https://github.com/sachinchoolur/lightGallery
+                            $("#lightgalleryNormal").lightGallery({
+                                selector: '.item'
+                            });
+                            $("#lightgalleryGallery").lightGallery({
+                                selector: '.item'
+                            });
+                        });
+                        // Affiche les bouton de suppression si c'est le poste qui a uploadé
+                        if (localStorage.getItem('myFiles')) {
+                            var storageMyFiles = JSON.parse(localStorage.getItem('myFiles'));
+                            if (storageMyFiles.items.filter(function(e) { return e.id === '1759570451-68'; }).length > 0) {
+                                var searchWithId = storageMyFiles.items.filter(function(e) { return e.id === '1759570451-68'; })
+                                var keyForThis = Object.values(searchWithId[0])[1];
+                                $('.deleteAll').show();
+                                $('.delete').show();         
+                                $('#files_key').val(keyForThis);    
+                                $('#uploadOptionPassword').hide();    
+                                $('#uploadOptionAccess').hide();    
+                                $('.expire-button').hide();
+                                $('#addToShare').show();         
+                                var links = $('.deleteLink');
+                                for(var i = 0; i< links.length; i++){
+                                    var oldLink = links[i].href;
+                                    var newLink = oldLink.replace('KEYHERE', keyForThis);
+                                    links[i].href = newLink;
+                                }
+                                var links = $('.deleteLinkAll');
+                                for(var i = 0; i< links.length; i++){
+                                    var oldLink = links[i].href;
+                                    var newLink = oldLink.replace('KEYHERE', keyForThis);
+                                    links[i].href = newLink;
+                                }
+                            } else {
+                                $('#addToShare').hide();
+                            }
+                        } else {
+                            $('#addToShare').hide();
+                        }
+                        
+                        function deleteLast(href) {
+                            var hrefSplit = href.split('\/');
+                            var id = false;
+                            var key = false;
+                            for (var i = 0; i < hrefSplit.length; i++) {
+                                var regexTimestamp = RegExp('^[0-9]+-[0-9]{1,2}$');
+                                if (regexTimestamp.test(hrefSplit[i])) {
+                                    id=hrefSplit[i];
+                                }
+                                if (parseInt(hrefSplit[i]) >= 100000000000 && parseInt(hrefSplit[i]) <= 999999999999) {
+                                    key=hrefSplit[i];
+                                }
+                            }
+                            if (id != false && key != false && localStorage.getItem('myFiles')) {
+                                var storageMyFiles = JSON.parse(localStorage.getItem('myFiles'));
+                                var newData = {items: []};
+                                for (var i = 0; i < storageMyFiles.items.length; i++) {
+                                    var idSplit=storageMyFiles.items[i].id.split("-");
+                                    var timestampNow = Number(new Date());
+                                    var timestampExpire = idSplit[0]*1000;
+                                    // Ne pas afficher les expiré
+                                    // Et si ce n'est pas celui qu'on efface
+                                    if (timestampNow < timestampExpire
+                                    && storageMyFiles.items[i].id != id
+                                    && storageMyFiles.items[i].key != key) {
+                                        // On update le maintient dans le stroage
+                                        newData.items.push(
+                                                {id: storageMyFiles.items[i].id, key: storageMyFiles.items[i].key}
+                                            );
+                                    } 
+                                }
+                                // Ecriture du storage
+                                localStorage.setItem('myFiles', JSON.stringify(newData));
+                            }
+                        }
+                        
+                        $(".deleteLinkAll").on('click',function(){
+                            if (confirm("Are you sure you want to delete everything?")) {
+                                deleteLast(this.href);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });    
+                        $(".deleteLink").on('click',function(){
+                            if (confirm("Are you sure you want to delete it?")) {
+                                deleteLast(this.href);                                return true;
+                            } else {
+                                return false;
+                            }
+                        });    
+                        
+                    </script>
+                                <div id="footer">
+                <p class="footer_right">By <a href="http://david.mercereau.info/">David Mercereau</a> (<a href="https://framagit.org/kepon/file2link">Git repository</a>)</p>
+                <p class="footer_left">file2link version 1.2 is an open software licensed <a href="https://en.wikipedia.org/wiki/Beerware">Beerware</a> <span id="upgrade"></span></p>
+                <p class="footer_htmlPages"> <a href="https://drop.siick.fr/cgu.html">CGU</a> </p>            </div>
+            <!-- Check Upgrade -->
+                        <script type="text/javascript">
+            function checkUpdate() {
+                var timeStamp = Math.floor(Date.now() / 1000);
+                if (! localStorage.getItem('checkUpdate') || Math.floor(parseInt(localStorage.getItem('checkUpdate'))+86400) < timeStamp) {
+                    localStorage.setItem('checkUpdate', timeStamp);
+                    $.ajax({
+                        url: "https://dl.zici.fr/file2link_checkupdate.php",
+                        type: "GET",
+                        crossDomain: true,
+                        dataType: "html",
+                        success: function (response) {
+                            localStorage.setItem('getVersion', response);
+                        },
+                        error: function (xhr, status) {
+                            trucAdir(3, 'Erreur dans le checkupdate' + status);
+                        }
+                    });
+                }
+            }
+            checkUpdate();
+            if (localStorage.getItem('getVersion')) {
+                if (localStorage.getItem('getVersion').replace(/\n|\r/g,'') != '1.2') {
+                    $('#upgrade').html('(v' + localStorage.getItem('getVersion').replace(/\n|\r/g,'') + ' is ready, <a href="https://framagit.org/kepon/file2link">upgrade</a>)');
+                }
+            }
+            </script>
+                                            </div>
+        <div id="bg">
+            <img src="https://picsum.photos/1024/768?random=1" alt="">
+        </div>       
+        <!-- The template to display files available for upload -->
+        <script id="template-upload" type="text/x-tmpl">
+          {% for (var i=0, file; file=o.files[i]; i++) { %}
+              <tr class="template-upload fade">
+                  <td>
+                      <span class="preview"></span>
+                  </td>
+                  <td>
+                      {% if (window.innerWidth > 480 || !o.options.loadImageFileTypes.test(file.type)) { %}
+                          <p class="name">{%=file.name%}</p>
+                      {% } %}
+                      <strong class="error text-danger"></strong>
+                  </td>
+                  <td>
+                      <p class="size">Processing...</p>
+                      <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+                  </td>
+                  <td>
+                      {% if (!o.options.autoUpload && o.options.edit && o.options.loadImageFileTypes.test(file.type)) { %}
+                        <button class="btn btn-success edit" data-index="{%=i%}" disabled>
+                            <i class="glyphicon glyphicon-edit"></i>
+                            <span>Edit</span>
+                        </button>
+                      {% } %}
+                      {% if (!i && !o.options.autoUpload) { %}
+                          <button style="display: none" class="btn btn-primary start" disabled>
+                              <i class="glyphicon glyphicon-upload"></i>
+                              <span>Start</span>
+                          </button>
+                      {% } %}
+                      {% if (!i) { %}
+                          <button class="btn btn-warning cancel">
+                              <i class="glyphicon glyphicon-ban-circle"></i>
+                              <span>Cancel</span>
+                          </button>
+                      {% } %}
+                  </td>
+              </tr>
+          {% } %}
+        </script>
+        <!-- The template to display files available for download -->
+        <script id="template-download" type="text/x-tmpl">
+          {% for (var i=0, file; file=o.files[i]; i++) { %}
+              <tr class="template-download fade">
+                  <td>
+                      <span class="preview">
+                          {% if (file.thumbnailUrl) { %}
+                              <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
+                          {% } %}
+                      </span>
+                  </td>
+                  <td>
+                      {% if (window.innerWidth > 480 || !file.thumbnailUrl) { %}
+                          <p class="name">
+                              {% if (file.url) { %}
+                                  <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
+                              {% } else { %}
+                                  <span>{%=file.name%}</span>
+                              {% } %}
+                          </p>
+                      {% } %}
+                      {% if (file.error) { %}
+                          <div><span class="label label-danger">Error</span> {%=file.error%}</div>
+                      {% } %}
+                  </td>
+                  <td>
+                      <span class="size">{%=o.formatFileSize(file.size)%}</span>
+                  </td>
+                  <td>
+                      <button class="btn btn-warning cancel">
+                          <i class="glyphicon glyphicon-ban-circle"></i>
+                          <span>Cancel</span>
+                      </button>
+                  </td>
+              </tr>
+          {% } %}
+        </script>
+        <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/vendor/jquery.ui.widget.js"></script>
+        <!-- The Templates plugin is included to render the upload/download listings -->
+<!--
+        <script src="https://blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
+-->
+        <script src="https://drop.siick.fr/lib/blueimp/tmpl.min.js"></script>
+        <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+<!--
+        <script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+-->
+        <script src="https://drop.siick.fr/lib/blueimp/load-image.all.min.js"></script>
+        <!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<!--
+        <script src="https://blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+-->
+        <script src="https://drop.siick.fr/lib/blueimp/canvas-to-blob.min.js"></script>
+        <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/jquery.iframe-transport.js"></script>
+        <!-- The basic File Upload plugin -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/jquery.fileupload.js"></script>
+        <!-- The File Upload processing plugin -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/jquery.fileupload-process.js"></script>
+        <!-- The File Upload image preview & resize plugin -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/jquery.fileupload-image.js"></script>
+        <!-- The File Upload audio preview plugin -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/jquery.fileupload-audio.js"></script>
+        <!-- The File Upload video preview plugin -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/jquery.fileupload-video.js"></script>
+        <!-- The File Upload validation plugin -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/jquery.fileupload-validate.js"></script>
+        <!-- The File Upload user interface plugin -->
+        <script src="https://drop.siick.fr/lib/jQuery-File-Upload/js/jquery.fileupload-ui.js"></script>
+        <script type="text/javascript">
+
+            $('#logout').on( "click", function() {
+                window.location.replace("/?log=out")
+            });
+
+            function convertHumain2octect(value) {
+                var regexKB = RegExp('KB$');
+                var regexMB = RegExp('MB$');
+                var regexGB = RegExp('GB$');
+                if (regexKB.test(value)) {
+                    return parseFloat(fileSize)*1024;
+                }else if (regexMB.test(value)) {
+                    return parseFloat(fileSize)*1024*1024;
+                }else if (regexGB.test(value)) {
+                    return parseFloat(fileSize)*1024*1024*1024;
+                }
+            }
+            function convertOctect2Humain(value) {
+                if (value > 1000000000) {
+                    return (value/1024/1024/1024).toFixed(2) + ' Go';
+                }else if (value > 1000000) {
+                    return (value/1024/1024).toFixed(2) + ' Mo';
+                }else if (value > 1000) {
+                    return (value/1024).toFixed(2) + ' Ko';
+                } else {
+                    return value;
+                }
+            }
+           
+
+            function checkQuotaFiles() {
+                var totalSize=368172;                //~ console.log(totalSize);
+                findUploadFiles=$('#fileupload').find('.size').get();
+                for(var i = 0; i< findUploadFiles.length; i++){
+                    fileSize=findUploadFiles[i].innerText;
+                    totalSize=totalSize+convertHumain2octect(fileSize);
+                }
+                if (totalSize > 536870912) {
+                    $('#maxUploadTotalError').show();
+                    $('#ButtonAdd').hide();
+                    $('#ButtonStart').hide();
+                } else {
+                    $('#maxUploadTotalError').hide();
+                    $('#ButtonAdd').show();
+                    $('#ButtonStart').show();
+                }
+                if (findUploadFiles.length > 0) {
+                    $('#ButtonReset').show();
+                } else {
+                    $('#ButtonReset').hide();
+                    $('#ButtonStart').hide();
+                }
+                //~ console.log(totalSize);
+                return true;
+            }
+            
+            
+            $('#fileupload').fileupload({
+                url: 'https://drop.siick.fr//upload.php',
+                added: function (e) {
+                    checkQuotaFiles();
+                },
+                started: function (e) {
+                    console.log('started');
+                    $('.shareUrlPrint').show();
+                    $('.expire-button').hide();
+                    $('#uploadOptionsLinkShow').hide();
+                    $('#uploadOptions').hide();
+                    $('#ButtonStart').hide();
+                    $('#ButtonMyFiles').hide();
+                    $('#ButtonAdd').hide();
+                },
+                // Se déclenche 
+                finished: function (e, data) {
+                    // Si ce n'est pas une annulatoin mais bien une fin d'upload
+                    if (data.errorThrown != 'abort') {
+                        // On mémorise l'upload dans le localStorage
+                        if (localStorage.getItem('myFiles')) {
+                            var data = JSON.parse(localStorage.getItem('myFiles'));
+                        } else {
+                            var data = {items: []};
+                        }
+                        // S'il n'existe pas déjà
+                        if (data.items.filter(function(e) { return e.id === $('#files_id').val(); }).length == 0) {
+                            data.items.push(
+                                {id: $('#files_id').val(), key: $('#files_key').val()}
+                            );
+                            localStorage.setItem('myFiles', JSON.stringify(data));
+                        }
+                    }
+                },
+                failed: function (e, data) {
+                    console.log(data);
+                    console.log(e);
+                    // Si un upload est en cours
+                    if (data.loaded > 0) {
+                        //~ console.log(data);
+                        //~ location.href='https://drop.siick.fr//'+$('#files_id').val()+'/';
+                        $('#files_id').val(idGen());
+                        $('#shareUrl').val('https://drop.siick.fr//' + $('#files_id').val() + '/');
+                        var keyGen = Math.floor(Math.random() * (999999999999 - 100000000000) + 100000000000);
+                        $('#files_key').val(keyGen);
+                    } else {
+                        checkQuotaFiles();
+                    }
+                }
+                
+            });
+
+            // Enable iframe cross-domain access via redirect option:
+            //~ $('#fileupload').fileupload(
+                //~ 'option',
+                //~ 'redirect',
+                //~ window.location.href.replace(/\/[^/]*$/, 'lib/jQuery-File-Upload-master//cors/result.html?%s')
+            //~ );
+
+            function redirectToFiles() {
+                location.replace('https://drop.siick.fr//'+ $('#files_id').val() + '/');
+            }
+
+            $('#fileupload').fileupload('option', {
+                    // Enable image resizing, except for Android and Opera,
+                    // which actually support image resizing, but fail to
+                    // send Blob objects via XHR requests:
+                    disableImageResize: /Android(?!.*Chrome)|Opera/.test(
+                    window.navigator.userAgent
+                ),
+                imageMaxWidth: $('#resize').val(),
+                imageMaxHeight:  $('#resize').val(),
+                maxFileSize: 536870912, 
+                minFileSize: 1, 
+                maxNumberOfFiles: 20, 
+                sequentialUploads: true,
+                limitConcurrentUploads: 1,    // To limit the number of concurrent uploads, set this option to an integer value greater than 0.
+                acceptFileTypes: /(\.|\/)(pdf|xml|od[a-z]|doc[a-z]?|xls[a-z]?|csv|ppt[a-z]?|7z|zip|bz|bz2|rar|tar|gz|tgz|txt|md|gif|jpe?g|png|svg|bmp|ico|mp3|aac|mid|wav|ov[a-z]|web.?|avi|jar|mp[a-z]?g|mov|mp.+|wm.+|xml|iso|torrent)$/i                
+            }).on('fileuploadprogressall', function (e, data) {
+                if (data.loaded == data.total) {
+                    $('#ButtonReset').hide();
+                    $('.btn.btn-warning.cancel').hide();
+                    $('#redirectToFiles').show();
+                    $('.redirectToFilesId').text($('#files_id').val());
+                    setTimeout(redirectToFiles, 1000);
+                }
+            });
+
+                            $('#files_id').val('1759570451-68');
+                        $('#shareUrl').val('https://drop.siick.fr//' + $('#files_id').val() + '/');
+
+        </script>
+        <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
+        <!--[if (gte IE 8)&(lt IE 10)]>
+          <script src="js/cors/jquery.xdr-transport.js"></script>
+        <![endif]--> 
+    </body>
+</html>
+
